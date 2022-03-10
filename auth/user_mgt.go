@@ -147,6 +147,21 @@ func (u *UserToCreate) UID(uid string) *UserToCreate {
 	return u.set("localId", uid)
 }
 
+// MultiFactor setter.
+func (u *UserToCreate) MultiFactor(settings *MultiFactorSettings) *UserToCreate {
+	factors := make([]*multiFactorInfoResponse, len(settings.EnrolledFactors))
+
+	for i := 0; i < len(settings.EnrolledFactors); i++ {
+		factors[i] = &multiFactorInfoResponse{
+			MFAEnrollmentID: settings.EnrolledFactors[i].UID,
+			DisplayName:     settings.EnrolledFactors[i].DisplayName,
+			PhoneInfo:       settings.EnrolledFactors[i].PhoneNumber,
+		}
+	}
+
+	return u.set("mfaInfo", factors)
+}
+
 func (u *UserToCreate) set(key string, value interface{}) *UserToCreate {
 	if u.params == nil {
 		u.params = make(map[string]interface{})
